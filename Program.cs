@@ -16,13 +16,21 @@ namespace L52_amnesty
 
     class CriminalDatabase
     {
-        private FormatOutput _format = new FormatOutput();
         private List<Prisoner> _criminals = new List<Prisoner>();
         private string _amnestiableCrime;
+        private string _delimiterString;
+        private string _delimiterMenu;
 
         public CriminalDatabase()
         {
+            char delimiterSymbolMenu = '=';
+            char delimiterSymbolString = '-';
+            int delimiterLenght = 75;
+
+            _delimiterString = new string(delimiterSymbolString, delimiterLenght);
+            _delimiterMenu = new string(delimiterSymbolMenu, delimiterLenght);
             _amnestiableCrime = "Антиправительственное";
+
             Fill();
         }
 
@@ -40,10 +48,9 @@ namespace L52_amnesty
             while (isOpen)
             {
                 Console.Clear();
-                Console.WriteLine($"База данных преступников.\n" + new string(_format.DelimiterSymbolString, _format.DelimiterLenght) +
-                                  $"\n{(int)Menu.BeforeAmnesty} - Список заключенных до Амнистии.\n{(int)Menu.AfterAmnesty} - Список " +
-                                  $"заключенных после Амнистии.\n{(int)Menu.Exit} - Выйти из программы.\n" +
-                                  new string(_format.DelimiterSymbolMenu, _format.DelimiterLenght));
+                Console.WriteLine($"База данных преступников.\n" + _delimiterString + $"\n{(int)Menu.BeforeAmnesty}" +
+                                  $" - Список заключенных до Амнистии.\n{(int)Menu.AfterAmnesty} - Список заключенных" +
+                                  $" после Амнистии.\n{(int)Menu.Exit} - Выйти из программы.\n" + _delimiterMenu);
 
                 Console.Write("Выберите действие: ");
 
@@ -100,13 +107,10 @@ namespace L52_amnesty
 
         private void Show(List<Prisoner> _prisoners)
         {
-            Console.WriteLine("Данные преступников.\n" + new string(_format.DelimiterSymbolMenu, _format.DelimiterLenght));
+            Console.WriteLine("Данные преступников.\n" + _delimiterMenu);
 
             foreach (var prisoner in _prisoners)
-            {
-                Console.WriteLine($"ФИО: {prisoner.FullName}\nПреступление: {prisoner.Crime}");
-                Console.WriteLine(new string(_format.DelimiterSymbolString, _format.DelimiterLenght));
-            }
+                Console.WriteLine($"ФИО: {prisoner.FullName}\nПреступление: {prisoner.Crime}\n" + _delimiterString);
         }
 
         private void Fill()
@@ -121,20 +125,6 @@ namespace L52_amnesty
         private void ShowError()
         {
             Console.WriteLine("\nВы ввели некорректное значение.");
-        }
-
-        private class FormatOutput
-        {
-            public FormatOutput()
-            {
-                DelimiterSymbolMenu = '=';
-                DelimiterSymbolString = '-';
-                DelimiterLenght = 75;
-            }
-
-            public char DelimiterSymbolMenu { get; private set; }
-            public char DelimiterSymbolString { get; private set; }
-            public int DelimiterLenght { get; private set; }
         }
     }
 
