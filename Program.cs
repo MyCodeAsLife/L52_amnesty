@@ -36,8 +36,8 @@ namespace L52_amnesty
 
         private enum Menu
         {
-            BeforeAmnesty = 1,
-            AfterAmnesty = 2,
+            Show = 1,
+            HoldAmnesty = 2,
             Exit = 3,
         }
 
@@ -48,9 +48,9 @@ namespace L52_amnesty
             while (isOpen)
             {
                 Console.Clear();
-                Console.WriteLine($"База данных преступников.\n" + _delimiterString + $"\n{(int)Menu.BeforeAmnesty}" +
-                                  $" - Список заключенных до Амнистии.\n{(int)Menu.AfterAmnesty} - Список заключенных" +
-                                  $" после Амнистии.\n{(int)Menu.Exit} - Выйти из программы.\n" + _delimiterMenu);
+                Console.WriteLine($"База данных преступников.\n" + _delimiterString + $"\n{(int)Menu.Show}" +
+                                  $" - Показать список заключенных.\n{(int)Menu.HoldAmnesty} - Провести амнистию." +
+                                  $"\n{(int)Menu.Exit} - Выйти из программы.\n" + _delimiterMenu);
 
                 Console.Write("Выберите действие: ");
 
@@ -60,12 +60,12 @@ namespace L52_amnesty
 
                     switch ((Menu)number)
                     {
-                        case Menu.BeforeAmnesty:
+                        case Menu.Show:
                             Show(_criminals);
                             break;
 
-                        case Menu.AfterAmnesty:
-                            ShowAfterAmnesty();
+                        case Menu.HoldAmnesty:
+                            HoldAmnesty();
                             break;
 
                         case Menu.Exit:
@@ -86,30 +86,26 @@ namespace L52_amnesty
             }
         }
 
-        private bool TryHoldAnAmnesty(out List<Prisoner> filteredPrisoners)
+        private void HoldAmnesty()
         {
-            filteredPrisoners = _criminals.Where(prisoner => prisoner.Crime != _amnestiableCrime).ToList();
+            List<Prisoner> filteredPrisoners = _criminals.Where(prisoner => prisoner.Crime != _amnestiableCrime).ToList();
 
-            if (filteredPrisoners.Count > 0)
-                return true;
-
-            filteredPrisoners = null;
-            return false;
-        }
-
-        private void ShowAfterAmnesty()
-        {
-            if (TryHoldAnAmnesty(out List<Prisoner> remainingPrisoners))
-                Show(remainingPrisoners);
-            else
+            if (filteredPrisoners.Count == _criminals.Count)
+            {
                 Console.WriteLine("Амнистировать некого.");
+            }
+            else
+            {
+                Console.WriteLine("Амнистия проведена");
+                _criminals = filteredPrisoners;
+            }
         }
 
-        private void Show(List<Prisoner> _prisoners)
+        private void Show(List<Prisoner> prisoners)
         {
             Console.WriteLine("Данные преступников.\n" + _delimiterMenu);
 
-            foreach (var prisoner in _prisoners)
+            foreach (var prisoner in prisoners)
                 Console.WriteLine($"ФИО: {prisoner.FullName}\nПреступление: {prisoner.Crime}\n" + _delimiterString);
         }
 
